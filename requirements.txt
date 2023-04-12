@@ -1,7 +1,12 @@
-fastapi
+fastapi~=0.95.0
 uvicorn[standard]
-numpy
-opencv-python
-matplotlib
+numpy~=1.23.5
+opencv-python~=4.7.0.72
+matplotlib~=3.7.1
 scipy
-scikit-learn
+scikit-learn~=1.2.2
+pandas
+google-api-python-client
+google-auth-oauthlib
+PyDrive~=1.3.1
+google

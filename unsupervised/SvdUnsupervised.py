@@ -7,7 +7,7 @@ def fit_svd(matrix):
     return u_matrix, sigma_matrix, v_matrix
 
 
-class Svd_unsupervised:
+class SvdUnsupervised:
     def __init__(self, n_components):
         self.n_components = n_components
 

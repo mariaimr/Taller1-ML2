@@ -19,7 +19,10 @@ class Matrix:
 
     @classmethod
     def calculate_trace(cls, matrix):
-        return np.trace(matrix)
+        if matrix.shape[0] == matrix.shape[1]:
+            return int(np.trace(matrix))
+        else:
+            return "Trace is only defined for square matrices"
 
     @classmethod
     def calculate_determinant(cls, matrix):
@@ -40,8 +43,13 @@ class Matrix:
 
     @classmethod
     def get_eigen_values_vectors(cls, matrix):
-        eigenvalues, eigenvectors = np.linalg.eig(matrix)
-        return {
-            "eigenvalues": eigenvalues,
-            "eigenvectors": eigenvectors
-        }
+        if matrix.shape[0] == matrix.shape[1]:
+            eigenvalues, eigenvectors = np.linalg.eig(matrix)
+            return {
+                "eigenvalues": eigenvalues,
+                "eigenvectors": eigenvectors
+            }
+        else:
+            return "Matrix is not square"
+
+
