@@ -1,6 +1,7 @@
+import logging
+
 import numpy as np
 from numpy.linalg import svd
-import logging
 
 from unsupervised.BaseEstimator import BaseEstimator
 
@@ -32,25 +33,21 @@ class PcaUnsupervised(BaseEstimator):
 
     def _decompose(self, X):
         # Mean centering
-        X = X.copy()
-        X -= self.mean
+        X_centered = X - self.mean
 
         if self.solver == "svd":
-            _, s, Vh = svd(X, full_matrices=True)
+            _, s, Vh = svd(X_centered, full_matrices=True)
         elif self.solver == "eigen":
-            s, Vh = np.linalg.eig(np.cov(X.T))
-            Vh = Vh.T
+            s, Vh = np.linalg.eig(np.cov(X_centered, rowvar=False))
 
         s_squared = s ** 2
         variance_ratio = s_squared / s_squared.sum()
         logging.info("Explained variance ratio: %s" % (variance_ratio[0: self.n_components]))
-        self.components = Vh[0: self.n_components]
-
-    def transform(self, X):
-        X = X.copy()
-        X -= self.mean
-        return np.dot(X, self.components.T)
+        self.components = Vh[:self.n_components].T
 
     def fit_transform(self, X):
         self.fit(X)
-        return self.transform(X)
+        X_centered = X - self.mean
+        X_pca = X_centered @ self.components
+        img_reconstructed = (X_pca @ self.components.T) + self.mean
+        return img_reconstructed

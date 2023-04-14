@@ -1,21 +1,21 @@
+import random
 import time
 
 import numpy as np
-import random
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
 
 import ScikitLearn
-import Unsupervised
-from Matrix import Matrix
 from Picture import Picture
-from Unsupervised import descompose_my_picture, plot_singular_values, \
-    difference_my_picture_and_aproximation, plot_dimension_reduction_methods_from_scratch
+from matrix.Matrix import Matrix
+from unsupervised import Unsupervised
+from unsupervised.Unsupervised import descompose_my_picture, plot_singular_values, \
+    difference_my_picture_and_approximation, plot_dimension_reduction_methods_from_scratch
 
 app = FastAPI()
 
 
-@app.post("/matrix-perations")
+@app.post("/1-matrix-operations")
 async def matrix_operations(rows: int = random.randint(1, 10), cols: int = random.randint(1, 10)):
     matrix = Matrix(rows, cols)
     matrix_data = matrix.create(rows, cols)
@@ -41,7 +41,14 @@ async def matrix_operations(rows: int = random.randint(1, 10), cols: int = rando
     }
 
 
-@app.get("/edit-my-picture")
+@app.get("/2-required-download-face-pictures-from-google-drive")
+async def download_required_pictures():
+    picture = Picture()
+    picture.load_pictures()
+    return {}
+
+
+@app.get("/2-edit-my-picture")
 async def edit_and_plot_my_picture():
     picture = Picture()
     picture.edit_my_picture()
@@ -49,21 +56,21 @@ async def edit_and_plot_my_picture():
     return FileResponse(my_picture, media_type="image/jpg")
 
 
-@app.get("/calculate-picture-average")
+@app.get("/2-calculate-picture-average")
 async def calculate_and_plot_picture_average():
     picture = Picture()
     avg_picture = picture.get_picture_average()
     return FileResponse(avg_picture, media_type="image/jpg")
 
 
-@app.get("/calculate-distance-from-my-picture-to-average")
+@app.get("/3-calculate-distance-from-my-picture-to-average")
 async def calculate_distance_my_picture_to_average():
     picture = Picture()
     distance = picture.calculate_distance_my_picture_to_avg()
     return {"Distance from my picture to the average (MSE)": np.round(distance, 3)}
 
 
-@app.get("/plot-singular-values")
+@app.get("/4-plot-singular-values")
 async def plot_my_picture_singular_values():
     picture = Picture()
     my_picture = picture.edit_my_picture()
@@ -71,7 +78,7 @@ async def plot_my_picture_singular_values():
     return FileResponse(singular_values_picture, media_type="image/jpg")
 
 
-@app.get("/apply-svd-over-my-picture")
+@app.get("/4-apply-svd-over-my-picture")
 async def apply_svd_over_my_picture():
     picture = Picture()
     my_picture = picture.edit_my_picture()
@@ -79,90 +86,121 @@ async def apply_svd_over_my_picture():
     return FileResponse(svd_picture, media_type="image/jpg")
 
 
-@app.get("/calculate-distance-from-my-picture-to-approximation")
+@app.get("/4-calculate-distance-from-my-picture-to-approximation")
 async def calculate_difference_between_my_picture_and_approximation():
     picture = Picture()
     my_picture = picture.edit_my_picture()
-    difference = difference_my_picture_and_aproximation(my_picture)
+    difference = difference_my_picture_and_approximation(my_picture)
     return difference
 
 
-@app.get("/train-mnist-dataset-with-logistic-regression")
+@app.get("/5-train-mnist-dataset-with-logistic-regression")
 async def train_mnist_dataset_with_scikit_learn():
     X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
     start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train, X_test, y_test)
-    return {"Score logistic regression": score,
+    model = ScikitLearn.train_logistic_regression_model(X_train, y_train)
+    return {"Score logistic regression": model.score(X_test, y_test),
             "Execution time (s)": time.time() - start_time}
 
 
-@app.get("/plot-new-features-generated-methods-from-scratch")
+@app.get("/6-plot-new-features-generated-methods-from-scratch")
 async def plot_two_features_generated_methods_from_scratch():
     plot = plot_dimension_reduction_methods_from_scratch()
     return FileResponse(plot, media_type="image/jpg")
 
 
-@app.get("/train-with-logistic-regression-svd")
-async def train_mnist_dataset_with_svd_unsupervised():
+@app.get("/6-train-logistic-regression-unsupervised")
+async def train_mnist_dataset_unsupervised():
     X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
-    X_train, X_test = Unsupervised.SVD_from_scratch(X_train, X_test)
-    start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train, X_test, y_test)
-    return {"Score logistic regression with SVD": score,
-            "Execution time (s)": time.time() - start_time}
+
+    X_train_svd = Unsupervised.SVD_from_scratch(X_train)
+    X_test_svd = Unsupervised.SVD_from_scratch(X_test)
+    start_time_model_svd = time.time()
+    model_svd = ScikitLearn.train_logistic_regression_model(X_train_svd, y_train)
+    time_model_svd = time.time() - start_time_model_svd
+
+    X_train_pca = Unsupervised.PCA_from_scratch(X_train)
+    X_test_pca = Unsupervised.PCA_from_scratch(X_test)
+    start_time_model_pca = time.time()
+    model_pca = ScikitLearn.train_logistic_regression_model(X_train_pca, y_train)
+    time_model_pca = time.time() - start_time_model_pca
+
+    X_train_tsne = Unsupervised.TSNE_from_scratch(X_train)
+    X_test_tsne = Unsupervised.TSNE_from_scratch(X_test)
+    start_time_model_tsne = time.time()
+    model_tsne = ScikitLearn.train_logistic_regression_model(X_train_tsne, y_train[:500])
+    time_model_tsne = time.time() - start_time_model_tsne
+
+    return {
+        "Score logistic regression with SVD": model_svd.score(X_test_svd, y_test),
+        "Execution time fit model with SVD (s)": time_model_svd,
+        "Score logistic regression with PCA": model_pca.score(X_test_pca, y_test),
+        "Execution time fit model with PCA (s)": time_model_pca,
+        "Score logistic regression with TSNE": model_tsne.score(X_test_tsne, y_test[:500]),
+        "Execution time fit model with TSNE (s)": time_model_tsne
+    }
 
 
-@app.get("/train-with-logistic-regression-pca")
-async def train_mnist_dataset_with_pca_unsupervised():
-    X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
-    X_train, X_test = Unsupervised.PCA_from_scratch(X_train, X_test)
-    start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train, X_test, y_test)
-    return {"Score logistic regression with PCA": score,
-            "Execution time (s)": time.time() - start_time}
-
-
-@app.get("/train-with-logistic-regression-tsne")
-async def train_mnist_dataset_with_tsne_unsupervised():
-    X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
-    X_train, X_test = Unsupervised.TSNE_from_scratch(X_train, y_train, X_test, y_test)
-    start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train[:500], X_test, y_test[:500])
-    return {"Score logistic regression with TSNE": score,
-            "Execution time (s)": time.time() - start_time}
-
-
-@app.get("/plot-new-features-generated-by-scikit-learn")
+@app.get("/7-plot-new-features-generated-by-scikit-learn")
 async def plot_two_features_generated_by_scikit_learn():
     plot = ScikitLearn.plot_dimension_reduction_scikit_learn()
     return FileResponse(plot, media_type="image/jpg")
 
 
-@app.get("/train-with-svd-scikit-learn")
-async def train_mnist_dataset_with_svd_scikit_learn():
+@app.get("/7-train-with-scikit-learn")
+async def train_mnist_dataset_with_scikit_learn():
     X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
-    X_train, X_test = ScikitLearn.SVD_scikit_learn(X_train, X_test)
-    start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train, X_test, y_test)
-    return {"Score logistic regresion with SVD": score,
-            "Execution time (s)": time.time() - start_time}
+
+    X_train_svd = ScikitLearn.SVD_scikit_learn(X_train)
+    X_test_svd = ScikitLearn.SVD_scikit_learn(X_test)
+    start_time_model_svd = time.time()
+    model_svd = ScikitLearn.train_logistic_regression_model(X_train_svd, y_train)
+    time_model_svd = time.time() - start_time_model_svd
+
+    X_train_pca = ScikitLearn.PCA_scikit_learn(X_train)
+    X_test_pca = ScikitLearn.PCA_scikit_learn(X_test)
+    start_time_model_pca = time.time()
+    model_pca = ScikitLearn.train_logistic_regression_model(X_train_pca, y_train)
+    time_model_pca = time.time() - start_time_model_pca
+
+    X_train_tsne = ScikitLearn.TSNE_scikit_learn(X_train)
+    X_test_tsne = ScikitLearn.TSNE_scikit_learn(X_test)
+    start_time_model_tsne = time.time()
+    model_tsne = ScikitLearn.train_logistic_regression_model(X_train_tsne, y_train)
+    time_model_tsne = time.time() - start_time_model_tsne
+
+    return {
+        "Score logistic regression with SVD": model_svd.score(X_test_svd, y_test),
+        "Execution time fit model with SVD (s)": time_model_svd,
+        "Score logistic regression with PCA": model_pca.score(X_test_pca, y_test),
+        "Execution time fit model with PCA (s)": time_model_pca,
+        "Score logistic regression with TSNE": model_tsne.score(X_test_tsne, y_test),
+        "Execution time fit model with TSNE (s)": time_model_tsne
+    }
 
 
-@app.get("/train-with-pca-scikit-learn")
-async def train_mnist_dataset_with_pca_scikit_learn():
+@app.post("/11-classify-mnist-image-svd")
+async def classify_image_svd(file: UploadFile):
+    image = ScikitLearn.read_image(file)
     X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
-    X_train, X_test = ScikitLearn.PCA_scikit_learn(X_train, X_test)
-    start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train, X_test, y_test)
-    return {"Score logistic regression with PCA": score,
-            "Execution time (s)": time.time() - start_time}
+    X_train_red = Unsupervised.SVD_from_scratch(X_train)
+    model = ScikitLearn.train_logistic_regression_model(X_train_red, y_train)
+    return {"predicted label": model.predict(image)[0]}
 
 
-@app.get("/train-with-tsne-scikit-learn")
-async def train_mnist_dataset_with_tsne_scikit_learn():
+@app.post("/11-classify-mnist-image-pca")
+async def classify_image_pca(file: UploadFile):
+    image = ScikitLearn.read_image(file)
     X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
-    X_train, X_test = ScikitLearn.TSNE_scikit_learn(X_train, X_test)
-    start_time = time.time()
-    score = ScikitLearn.train_logistic_regression_model(X_train, y_train, X_test, y_test)
-    return {"Score logistic regression with TSNE": score,
-            "Execution time (s)": time.time() - start_time}
+    X_train_red = Unsupervised.PCA_from_scratch(X_train)
+    model = ScikitLearn.train_logistic_regression_model(X_train_red, y_train)
+    return {"predicted label": model.predict(image)[0]}
+
+
+@app.post("/11-classify-mnist-image-tsne")
+async def classify_image_tsne(file: UploadFile):
+    image = ScikitLearn.read_image(file)
+    X_train, y_train, X_test, y_test = ScikitLearn.load_nmist_dataset()
+    X_train_red = Unsupervised.TSNE_transform_from_scratch(X_train)
+    model = ScikitLearn.train_logistic_regression_model(X_train_red, y_train[:500])
+    return {"predicted label": model.predict(image)[0]}

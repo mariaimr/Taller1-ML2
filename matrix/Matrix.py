@@ -19,10 +19,8 @@ class Matrix:
 
     @classmethod
     def calculate_trace(cls, matrix):
-        if matrix.shape[0] == matrix.shape[1]:
-            return int(np.trace(matrix))
-        else:
-            return "Trace is only defined for square matrices"
+        return int(np.trace(matrix))
+
 
     @classmethod
     def calculate_determinant(cls, matrix):

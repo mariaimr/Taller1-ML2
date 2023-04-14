@@ -2,9 +2,12 @@ import os
 import time
 
 import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
+from fastapi import UploadFile
+from sklearn.datasets import fetch_openml
 from sklearn.decomposition import PCA, TruncatedSVD
 from sklearn.linear_model import LogisticRegression
-from sklearn.datasets import fetch_openml
 from sklearn.manifold import TSNE
 
 
@@ -23,10 +26,10 @@ def load_nmist_dataset():
     return X_train, y_train, X_test, y_test
 
 
-def train_logistic_regression_model(X_train, y_train, X_test, y_test):
+def train_logistic_regression_model(X_train, y_train):
     logistic_regression_model = LogisticRegression()
     logistic_regression_model.fit(X_train, y_train)
-    return logistic_regression_model.score(X_test, y_test)
+    return logistic_regression_model
 
 
 def plot_dimension_reduction_scikit_learn():
@@ -39,9 +42,12 @@ def plot_dimension_reduction_scikit_learn():
     train_color = ['c' if i == '0' else 'm' for i in y_train]
     test_color = ['c' if i == '0' else 'm' for i in y_test]
 
-    svd_train_components, svd_test_components = SVD_scikit_learn(X_train, X_test)
-    pca_train_components, pca_test_components = PCA_scikit_learn(X_train, X_test)
-    tsne_train_components, tsne_test_components = TSNE_scikit_learn(X_train, X_test)
+    svd_train_components = SVD_scikit_learn(X_train)
+    svd_test_components = SVD_scikit_learn(X_test)
+    pca_train_components = PCA_scikit_learn(X_train)
+    pca_test_components = PCA_scikit_learn(X_test)
+    tsne_train_components = TSNE_scikit_learn(X_train)
+    tsne_test_components = TSNE_scikit_learn(X_test)
 
     _, ((ax1, ax2), (ax3, ax4), (ax5, ax6)) = plt.subplots(3, 2, figsize=(11, 11))
     ax1.scatter(pca_train_components[:, 0], pca_train_components[:, 1], c=train_color)
@@ -62,28 +68,32 @@ def plot_dimension_reduction_scikit_learn():
     return os.path.join(resources_path, picture_name)
 
 
-def PCA_scikit_learn(X_train, X_test):
+def PCA_scikit_learn(X):
     start_time = time.time()
     pca = PCA(n_components=2)
-    X_train_pca = pca.fit_transform(X_train)
-    X_test_pca = pca.fit_transform(X_test)
+    X_pca = pca.fit_transform(X)
     print(f"Execution time PCA (s): {time.time() - start_time}")
-    return X_train_pca, X_test_pca
+    return X_pca
 
 
-def TSNE_scikit_learn(X_train, X_test):
+def TSNE_scikit_learn(X):
     start_time = time.time()
     tsne = TSNE(n_components=2)
-    X_train_tsne = tsne.fit_transform(X_train)
-    X_test_tsne = tsne.fit_transform(X_test)
+    X_tsne = tsne.fit_transform(X)
     print(f"Execution time TSNE (s): {time.time() - start_time}")
-    return X_train_tsne, X_test_tsne
+    return X_tsne
 
 
-def SVD_scikit_learn(X_train, X_test):
+def SVD_scikit_learn(X):
     start_time = time.time()
     svd = TruncatedSVD(n_components=2)
-    X_train_svd = svd.fit_transform(X_train)
-    X_test_svd = svd.fit_transform(X_test)
+    X_svd = svd.fit_transform(X)
     print(f"Execution time SVD (s): {time.time() - start_time}")
-    return X_train_svd, X_test_svd
+    return X_svd
+
+def read_image(file: UploadFile):
+    with Image.open(file.file) as img:
+        img_gray = img.convert('L')  # convert to grayscale
+        img_array = np.array(img_gray)
+        img_array = [img_array.flatten()]  # reshape to one-dimensional array
+        return img_array

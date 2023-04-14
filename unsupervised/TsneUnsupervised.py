@@ -1,4 +1,5 @@
 import numpy as np
+from sklearn.linear_model import LinearRegression
 
 
 class TsneUnsupervised:
@@ -145,16 +146,10 @@ class TsneUnsupervised:
         P = self.p_conditional_to_joint(p_conditional)
         return P
 
-    def fit_transform(self, X, y):
+    def fit(self, X):
         """Estimates a SNE model.
         # Arguments
             X: Input data matrix.
-            y: Class labels for that matrix.
-            P: Matrix of joint probabilities.
-            rng: np.random.RandomState().
-            num_iters: Iterations to train for.
-            q_fn: Function that takes Y and gives Q prob matrix.
-            plot: How many times to plot during training.
         # Returns:
             Y: Matrix, low-dimensional representation of X.
         """
@@ -182,4 +177,15 @@ class TsneUnsupervised:
                 # Update previous Y's for momentum
                 Y_m2 = Y_m1.copy()
                 Y_m1 = Y.copy()
+
         return Y
+
+    def fit_transform(self, X):
+        Y = self.fit(X)
+        mlr = LinearRegression()
+        mlr.fit(Y, X)
+
+        img_reconstructed = mlr.predict(Y)
+        return img_reconstructed
+
+

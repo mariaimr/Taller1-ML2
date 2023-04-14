@@ -1,19 +1,20 @@
-import numpy as np
-import cv2
 import os
+
+import cv2
+import numpy as np
 
 from DownloadPicture import download_pictures
 
 
 class Picture:
     face_pictures = []
+    my_picture = 0
     def __init__(self):
         path = os.path.dirname(os.path.abspath(__file__))
         self.resources_path = os.path.join(path, "resources")
         self.pictures_path = os.path.join(self.resources_path, "face_pictures")
         self.my_picture_filename = "MariaMartinez.jpg"
         self.new_size = (256, 256)
-        self.my_picture = self.edit_my_picture()
 
     def load_pictures(self):
         download_pictures()
@@ -25,12 +26,13 @@ class Picture:
                 if picture is not None:
                     gray_picture = cv2.resize(picture, self.new_size)
                     face_pictures.append(gray_picture)
-        print(len(face_pictures))
+        Picture.face_pictures = face_pictures
         return face_pictures
 
     def edit_my_picture(self):
         my_picture_file = os.path.join(self.pictures_path, self.my_picture_filename)
         picture = cv2.imread(my_picture_file, cv2.IMREAD_GRAYSCALE)
+        Picture.my_picture = cv2.resize(picture, self.new_size)
         return cv2.resize(picture, self.new_size)
 
     def get_my_picture(self):
@@ -39,8 +41,6 @@ class Picture:
         return os.path.join(self.resources_path, self.my_picture_filename)
 
     def calculate_average(self):
-        if len(Picture.face_pictures) == 0:
-            Picture.face_pictures = self.load_pictures()
         return np.mean(Picture.face_pictures, axis=0)
 
     def get_picture_average(self):
@@ -54,4 +54,4 @@ class Picture:
         my picture and the average image, which is a
         measure of the distance between the two images.
         """
-        return np.mean((self.my_picture - self.calculate_average()) ** 2)
+        return np.mean((Picture.my_picture - self.calculate_average()) ** 2)
