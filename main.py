@@ -5,8 +5,8 @@ import numpy as np
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
 
-import ScikitLearn
-from Picture import Picture
+from scikitlearn import ScikitLearn
+from picture.Picture import Picture
 from matrix.Matrix import Matrix
 from unsupervised import Unsupervised
 from unsupervised.Unsupervised import descompose_my_picture, plot_singular_values, \

@@ -11,7 +11,7 @@ class Picture:
     my_picture = 0
     def __init__(self):
         path = os.path.dirname(os.path.abspath(__file__))
-        self.resources_path = os.path.join(path, "resources")
+        self.resources_path = os.path.join(path, "../resources")
         self.pictures_path = os.path.join(self.resources_path, "face_pictures")
         self.my_picture_filename = "MariaMartinez.jpg"
         self.new_size = (256, 256)
@@ -50,8 +50,7 @@ class Picture:
 
     def calculate_distance_my_picture_to_avg(self):
         """
-        :return: mse variable contains the MSE between
-        my picture and the average image, which is a
-        measure of the distance between the two images.
+        :return: MSE measures the average difference in pixel values between two images.
+        The lower the MSE value, the greater the similarity between the two images.
         """
         return np.mean((Picture.my_picture - self.calculate_average()) ** 2)

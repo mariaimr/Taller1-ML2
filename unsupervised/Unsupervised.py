@@ -4,7 +4,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 
-from ScikitLearn import load_nmist_dataset
+from scikitlearn.ScikitLearn import load_nmist_dataset
 from unsupervised.PcaUnsupervised import PcaUnsupervised
 from unsupervised.SvdUnsupervised import SvdUnsupervised
 from unsupervised.TsneUnsupervised import TsneUnsupervised
