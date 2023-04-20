@@ -3,7 +3,7 @@ import os
 import cv2
 import numpy as np
 
-from DownloadPicture import download_pictures
+from picture.DownloadPicture import download_pictures
 
 
 class Picture:
@@ -53,4 +53,5 @@ class Picture:
         :return: MSE measures the average difference in pixel values between two images.
         The lower the MSE value, the greater the similarity between the two images.
         """
+        #  revisar la distancia euclidiana y distancia Frobenius
         return np.mean((Picture.my_picture - self.calculate_average()) ** 2)

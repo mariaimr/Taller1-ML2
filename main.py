@@ -5,9 +5,11 @@ import numpy as np
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
 
-from scikitlearn import ScikitLearn
-from picture.Picture import Picture
+from clustering import ClusteringUnsupervised, ClusteringScikitLearn
+from clustering.Data import create_toy_data
 from matrix.Matrix import Matrix
+from picture.Picture import Picture
+from scikitlearn import ScikitLearn
 from unsupervised import Unsupervised
 from unsupervised.Unsupervised import descompose_my_picture, plot_singular_values, \
     difference_my_picture_and_approximation, plot_dimension_reduction_methods_from_scratch
@@ -204,3 +206,37 @@ async def classify_image_tsne(file: UploadFile):
     X_train_red = Unsupervised.TSNE_transform_from_scratch(X_train)
     model = ScikitLearn.train_logistic_regression_model(X_train_red, y_train[:500])
     return {"predicted label": model.predict(image)[0]}
+
+
+@app.get("/plot-toy-data")
+async def plot_data_dummy():
+    X, y = create_toy_data()
+    plot = ClusteringUnsupervised.plot_data(X, y)
+    return FileResponse(plot, media_type="image/jpg")
+
+
+@app.get("/calculate-distance-between-clusters")
+async def calculate_clusters_distance():
+    X, y = create_toy_data()
+    centroids_distances = ClusteringUnsupervised.calculate_distances(X)
+    return centroids_distances
+
+
+@app.get("/calculate-the-silhouette-plots-and-coefficients-k-means")
+async def calculate_the_silhouette_plot_k_means():
+    X, y = create_toy_data()
+    plot = ClusteringUnsupervised.plot_silhouette_coefficients_k_means(X, y)
+    return FileResponse(plot, media_type="image/jpg")
+
+
+@app.get("/calculate-the-silhouette-plots-and-coefficients-k-medoids")
+async def calculate_the_silhouette_plot_k_medoids():
+    X, y = create_toy_data()
+    plot = ClusteringUnsupervised.plot_silhouette_coefficients_k_medoids(X)
+    return FileResponse(plot, media_type="image/jpg")
+
+
+@app.get("/plot-scattered-data")
+async def plot_scattered_data():
+    plot = ClusteringScikitLearn.plot_scattered_data()
+    return FileResponse(plot, media_type="image/jpg")

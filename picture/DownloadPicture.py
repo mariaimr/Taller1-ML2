@@ -9,7 +9,7 @@ SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly']
 
 def download_pictures():
     path = os.path.dirname(os.path.abspath(__file__))
-    path_images = os.path.join(path, "resources/face_pictures")
+    path_images = os.path.join(path, "../resources/face_pictures")
 
     gauth = GoogleAuth()
     gauth.LocalWebserverAuth()
