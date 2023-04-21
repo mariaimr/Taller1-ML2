@@ -6,7 +6,9 @@ from fastapi import FastAPI, UploadFile
 from fastapi.responses import FileResponse
 
 from clustering import ClusteringUnsupervised, ClusteringScikitLearn
-from clustering.Data import create_toy_data
+from clustering.Data import create_toy_data, create_scattered_data_noisy_circles, create_scattered_data_noisy_moons, \
+    create_scattered_data_blobs, create_scattered_data_without_structure, create_anisotropic_distributed_data, \
+    create_scattered_data_blobs_varied_variances
 from matrix.Matrix import Matrix
 from picture.Picture import Picture
 from scikitlearn import ScikitLearn
@@ -225,7 +227,7 @@ async def calculate_clusters_distance():
 @app.get("/calculate-the-silhouette-plots-and-coefficients-k-means")
 async def calculate_the_silhouette_plot_k_means():
     X, y = create_toy_data()
-    plot = ClusteringUnsupervised.plot_silhouette_coefficients_k_means(X, y)
+    plot = ClusteringUnsupervised.plot_silhouette_coefficients_k_means(X)
     return FileResponse(plot, media_type="image/jpg")
 
 
@@ -239,4 +241,21 @@ async def calculate_the_silhouette_plot_k_medoids():
 @app.get("/plot-scattered-data")
 async def plot_scattered_data():
     plot = ClusteringScikitLearn.plot_scattered_data()
+    return FileResponse(plot, media_type="image/jpg")
+
+
+@app.get("/plot-scattered-with-scikitlearn_noisy_circles")
+async def plot_scattered_with_scikitlearn_cluster():
+    X, y = create_scattered_data_noisy_circles()
+    X, y = create_scattered_data_noisy_moons()
+    X, y = create_scattered_data_blobs()
+    X, y = create_scattered_data_without_structure()
+    X, y = create_anisotropic_distributed_data()
+    X, y = create_scattered_data_blobs_varied_variances()
+
+    X, y = create_toy_data()
+    plot = ClusteringScikitLearn.plot_scattered_with_k_means(X)
+    plot = ClusteringScikitLearn.plot_scattered_with_k_medoids(X)
+    #plot = ClusteringScikitLearn.plot_scattered_with_dbscan(X)
+    #plot = ClusteringScikitLearn.plot_scattered_with_spectral(X)
     return FileResponse(plot, media_type="image/jpg")

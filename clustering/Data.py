@@ -2,12 +2,12 @@ import numpy as np
 from sklearn import datasets
 from sklearn.datasets import make_blobs
 
-np.random.seed(1)
 n_samples = 500
 random_state = 170
 
 
 def create_toy_data():
+    np.random.seed(1)
     return make_blobs(
         n_samples=n_samples,
         n_features=2,
