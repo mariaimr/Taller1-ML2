@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from scikitlearn.ScikitLearn import load_nmist_dataset
-from unsupervised.PcaUnsupervised import PcaUnsupervised
-from unsupervised.SvdUnsupervised import SvdUnsupervised
-from unsupervised.TsneUnsupervised import TsneUnsupervised
+from unsupervised.dimensionality_reduction.PcaUnsupervised import PcaUnsupervised
+from unsupervised.dimensionality_reduction.SvdUnsupervised import SvdUnsupervised
+from unsupervised.dimensionality_reduction.TsneUnsupervised import TsneUnsupervised
 
 svd = SvdUnsupervised(n_components=2)
 
@@ -15,7 +15,7 @@ svd = SvdUnsupervised(n_components=2)
 def draw_svd(u_matrix, sigma_matrix, v_matrix):
     picture_name = "MyPictureDescomposed.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../resources")
     num_sv = [1, 5, 10, 15, 20, 30, 50, 150, 256]
 
     fig, ax = plt.subplots(figsize=(9, 6))
@@ -38,7 +38,7 @@ def draw_svd(u_matrix, sigma_matrix, v_matrix):
 def plot_singular_values(matrix):
     picture_name = "SingularValues.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../resources")
     u_matrix, sigma_matrix, v_matrix = svd.fit(matrix)
     sigma_matrix_diag = np.diag(sigma_matrix)
     fig, ax = plt.subplots(figsize=(9, 6))
@@ -107,7 +107,7 @@ def SVD_from_scratch(X):
 def plot_dimension_reduction_methods_from_scratch():
     picture_name = "DimensionReductionFromScratch.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../resources")
 
     X_train, y_train, X_test, y_test = load_nmist_dataset()
 

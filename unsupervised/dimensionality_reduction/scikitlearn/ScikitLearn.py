@@ -35,7 +35,7 @@ def train_logistic_regression_model(X_train, y_train):
 def plot_dimension_reduction_scikit_learn():
     picture_name = "DimensionReductionScikitLearn.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../../resources")
 
     X_train, y_train, X_test, y_test = load_nmist_dataset()
 

@@ -34,7 +34,7 @@ class KMedoids:
             new_labels = np.argmin(self.dist_matrix(X, self.medoids), axis=1)
             if np.array_equal(self.label, new_labels):
                 break
-        # Devolver los medoids y las asignaciones finales de los puntos a los clusters
+
         return self.medoids, self.label
 
     def dist_matrix(self, X, medoids):

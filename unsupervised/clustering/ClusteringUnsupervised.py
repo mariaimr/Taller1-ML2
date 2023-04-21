@@ -2,17 +2,16 @@ import os
 
 import numpy as np
 from matplotlib import pyplot as plt
-import matplotlib.cm as cm
 from sklearn.metrics import silhouette_samples, silhouette_score
 
-from unsupervised.KMeans import KMeans
-from unsupervised.KMedoids import KMedoids
+from unsupervised.clustering.KMeans import KMeans
+from unsupervised.clustering.KMedoids import KMedoids
 
 
 def plot_data(X, y):
     picture_name = "data_toy.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../resources")
     fig, ax = plt.subplots(figsize=(9, 6))
 
     plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis')
@@ -36,21 +35,21 @@ def calculate_distances(X):
 def plot_silhouette_coefficients_k_means(X):
     picture_name = "SilhouetteKMeans.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../resources")
 
-    # Definir una lista de números de clusters para probar
+    # Define a list of cluster numbers to be tested
     n_clusters_list = range(2, 6)
 
-    # Crear figuras subplots para el diagrama de coeficiente de silueta y la gráfica de clusters
+    # Create subplots for the silhouette coefficient plot and the cluster plot
     fig, axes = plt.subplots(2, len(n_clusters_list), figsize=(15, 8))
     for i, n_clusters in enumerate(n_clusters_list):
-        # Inicializar el modelo de K-Means con el número de clusters actual
+        # Initialize the K-Means model with the current number of clusters.
         cluster_centroids, labels = KMeans(n_clusters=n_clusters).fit(X)
 
-        # Calcular el coeficiente de silueta para los clusters
+        # Calculate the silhouette coefficient for the clusters
         silhouette_avg = silhouette_score(X, labels)
 
-        # Crear una gráfica de dispersión con los puntos de datos coloreados por las etiquetas de los clusters
+        # Create a scatter plot with the data points colored by the cluster labels.
         axes[0, i].scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis')
         axes[0, i].scatter(cluster_centroids[:, 0], cluster_centroids[:, 1], marker="o", c="white", alpha=1, s=200,
                            edgecolor="k")
@@ -58,7 +57,7 @@ def plot_silhouette_coefficients_k_means(X):
             axes[0, i].scatter(c[0], c[1], marker="$%d$" % idx, alpha=1, s=50, edgecolor="k")
         axes[0, i].set_title(f'Clusters = {n_clusters}\nSilhouette = {silhouette_avg:.2f}')
 
-        # Crear un diagrama de barras del coeficiente de silueta para los clusters
+        # Create a bar chart of the silhouette coefficient for the clusters.
         cluster_silhouette_avg = silhouette_score(X[labels >= 0], labels[labels >= 0])
         sample_silhouette_values = silhouette_samples(X, labels)
         y_lower = 10
@@ -86,21 +85,21 @@ def plot_silhouette_coefficients_k_means(X):
 def plot_silhouette_coefficients_k_medoids(X):
     picture_name = "SilhouetteKMedoids.jpg"
     path = os.path.dirname(os.path.abspath(__file__))
-    resources_path = os.path.join(path, "../resources")
+    resources_path = os.path.join(path, "../../resources")
 
-    # Definir una lista de números de clusters para probar
+    #  Define a list of cluster numbers to be tested
     n_clusters_list = range(2, 6)
 
-    # Crear figuras subplots para el diagrama de coeficiente de silueta y la gráfica de clusters
+    # Create subplots for the silhouette coefficient plot and the cluster plot
     fig, axes = plt.subplots(2, len(n_clusters_list), figsize=(15, 8))
     for i, n_clusters in enumerate(n_clusters_list):
-        # Inicializar el modelo de K-Means con el número de clusters actual
+        # Initialize the K-Means model with the current number of clusters.
         cluster_medoids, labels = KMedoids(n_clusters=n_clusters).fit(X)
 
-        # Calcular el coeficiente de silueta para los clusters
+        # Calculate the silhouette coefficient for the clusters
         silhouette_avg = silhouette_score(X, labels)
 
-        # Crear una gráfica de dispersión con los puntos de datos coloreados por las etiquetas de los clusters
+        # Create a scatter plot with the data points colored by the cluster labels.
         axes[0, i].scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis')
         axes[0, i].scatter(cluster_medoids[:, 0], cluster_medoids[:, 1], marker="o", c="white", alpha=1, s=200,
                            edgecolor="k")
@@ -108,7 +107,7 @@ def plot_silhouette_coefficients_k_medoids(X):
             axes[0, i].scatter(c[0], c[1], marker="$%d$" % idx, alpha=1, s=50, edgecolor="k")
         axes[0, i].set_title(f'Clusters = {n_clusters}\nSilhouette = {silhouette_avg:.2f}')
 
-        # Crear un diagrama de barras del coeficiente de silueta para los clusters
+        #  Create a bar chart of the silhouette coefficient for the clusters.
         cluster_silhouette_avg = silhouette_score(X[labels >= 0], labels[labels >= 0])
         sample_silhouette_values = silhouette_samples(X, labels)
         y_lower = 10

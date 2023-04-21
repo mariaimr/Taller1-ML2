@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from numpy.linalg import svd
 
-from unsupervised.BaseEstimator import BaseEstimator
+from unsupervised.dimensionality_reduction.BaseEstimator import BaseEstimator
 
 
 class PcaUnsupervised(BaseEstimator):
