@@ -60,51 +60,44 @@ def plot_scattered_with_cluster_methods():
 
     default_base = {
         "quantile": 0.3,
-        "eps": 0.3,
+        "eps": 0.2,
         "damping": 0.9,
         "preference": -200,
         "n_neighbors": 3,
         "n_clusters": 3,
-        "min_samples": 7,
+        "min_samples": 10,
         "xi": 0.05,
         "min_cluster_size": 0.1,
     }
 
     datasets = [
-        (create_scattered_data_noisy_circles(), {
-            "damping": 0.77,
-            "preference": -240,
-            "quantile": 0.2,
-            "n_clusters": 2,
-            "min_samples": 7,
-            "xi": 0.08,
-        }),
-        (create_scattered_data_noisy_moons(),  {
-            "damping": 0.75,
-            "preference": -220,
-            "n_clusters": 2,
-            "min_samples": 7,
-            "xi": 0.1,
-        }),
-        (create_scattered_data_blobs(), {
-            "eps": 0.18,
-            "n_neighbors": 2,
-            "min_samples": 7,
-            "xi": 0.01,
-            "min_cluster_size": 0.2,
-        }),
-        (create_anisotropic_distributed_data(), {
-            "eps": 0.15,
-            "n_neighbors": 2,
-            "min_samples": 7,
-            "xi": 0.1,
-            "min_cluster_size": 0.2,
-        }),
-        (create_scattered_data_blobs_varied_variances(), {"min_samples": 7, "xi": 0.1, "min_cluster_size": 0.2}),
-        (create_scattered_data_without_structure(), {})
+        ("Noisy Circles",
+         create_scattered_data_noisy_circles(), {
+             "n_clusters": 2,
+             "eps": 0.4,
+         }),
+        ("Noisy Moons",
+         create_scattered_data_noisy_moons(), {
+             "n_clusters": 2,
+             "min_samples": 10,
+             "eps": 0.3,
+         }),
+        ("Blobs",
+         create_scattered_data_blobs(), {
+             "eps": 0.2,
+             "min_samples": 10,
+         }),
+        ("Anisotropic",
+         create_anisotropic_distributed_data(), {
+             "eps": 0.2,
+             "n_neighbors": 2,
+             "min_samples": 10
+         }),
+        ("Blobs Varied", create_scattered_data_blobs_varied_variances(), {"min_samples": 10, "eps": 0.2}),
+        ("Without Structure", create_scattered_data_without_structure(), {})
     ]
 
-    for i_dataset, (dataset, algo_params) in enumerate(datasets):
+    for i_dataset, (name_data, dataset, algo_params) in enumerate(datasets):
         # update parameters with dataset-specific values
         params = default_base.copy()
         params.update(algo_params)
@@ -166,11 +159,19 @@ def plot_scattered_with_cluster_methods():
 
             # Calculate the silhouette coefficient for the clusters
             silhouette_avg = silhouette_score(X, y_pred)
-            plt.title(f'{name}\nSilhouette Average = {silhouette_avg:.2f}')
+            plt.title(f'{name}\nSilhouette Average = {silhouette_avg:.4f}')
             plt.xlim(-2.5, 2.5)
             plt.ylim(-2.5, 2.5)
             plt.xticks(())
             plt.yticks(())
+            plt.text(
+                0.99,
+                0.01,
+                name_data,
+                transform=plt.gca().transAxes,
+                size=12,
+                horizontalalignment="right",
+            )
             plot_num += 1
     plt.tight_layout()
     plt.savefig(os.path.join(resources_path, picture_name))

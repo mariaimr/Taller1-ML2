@@ -36,7 +36,7 @@ class KMeans:
         return self.centroids, self.label
 
     def _calc_distances(self, X):
-        return np.sqrt(((X - self.centroids[:, np.newaxis]) ** 2).sum(axis=2))
+        return np.sqrt(((X - self.centroids[:, np.newaxis]) ** 2).sum(axis=2))  # L2
 
     def pairwise_distances(self, X, Y=None):
         if Y is None:
@@ -50,7 +50,6 @@ class KMeans:
         distances = np.zeros((n_samples_X, n_samples_Y))
         for i in range(n_samples_X):
             for j in range(n_samples_Y):
-                distances[i, j] = np.sqrt(np.sum((X[i] - Y[j]) ** 2))
+                distances[i, j] = np.sqrt(np.sum((X[i] - Y[j]) ** 2))  # L2
 
         return distances
-

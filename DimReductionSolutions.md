@@ -1,4 +1,5 @@
-### **Answers to theoretical questionsA**
+## Lab1 ML II 
+### Dimensionality Reduction
   
 #### **8.** What strategies do you know (or can think of) in order to make PCA more robust?
 >  - Scaling the data: it can help to avoid the dominance of one variable over the others. This can be done using techniques such as standardization, normalization, and so on.

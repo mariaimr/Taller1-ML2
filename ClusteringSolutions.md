@@ -1,4 +1,5 @@
-### **Answers to clustering questions**
+## Lab2 ML II 
+### Clustering
   
 #### **1.** Research about the **Spectral Clustering** method, and answer the following questions:
 Spectral Clustering is a popular machine learning method used for clustering data points. It is a graph-based clustering technique that leverages the spectral properties of data to group similar data points together.
@@ -18,7 +19,6 @@ Spectral Clustering is a popular machine learning method used for clustering dat
 > **6. Post-Processing:** Optionally, perform post-processing steps, such as refining cluster assignments, handling outliers, or incorporating domain-specific constraints or prior knowledge.    
 > **7. Interpretation and Evaluation:** Interpret the clustering results in the context of the specific problem domain and evaluate the quality of the clustering using appropriate evaluation metrics.   
 > **8. Output:** Final cluster assignments or embeddings for further analysis or visualization.
-
 - **d.** Does it hold any relation to some of the concepts previously mentioned in class? Which, and how?
 > It is related to the PCA dimensionality reduction method, since Spectral Clustering also uses the decomposition of eigenvectors and eigenvalues to reduce the dimensionality of the data. 
 
@@ -42,3 +42,25 @@ DBSCAN (Density-Based Spatial Clustering of Applications with Noise) is a popula
 > - The identification of the elbow point is often subjective and relies on visual inspection of the plot, which may vary depending on the individual's perception and interpretation.
 > - It is dataset-dependent,the optimal number of clusters may vary depending on the specific dataset being analyzed.
 > - The elbow method assumes that all clusters have equal sizes, and the variance explained (or other quality metric) is an appropriate measure of cluster quality.
+
+#### **5.b.** How many clusters are there? How far are they from one another?
+***Run endpoints "/5-b-plot-toy-data" and "/5-b-calculate-distance-between-clusters" to see the plots and distances***
+> There are 4 clusters. The distance was calculated using the Euclidean distance between all the centroids obtained by K-means.
+>> - "Distance between cluster #1 and cluster #2": 8.861
+>> - "Distance between cluster #1 and cluster #3": 11.846
+>> - "Distance between cluster #1 and cluster #4": 13.718
+>> - "Distance between cluster #2 and cluster #3": 3.983
+>> - "Distance between cluster #2 and cluster #4": 5.039
+>> - "Distance between cluster #3 and cluster #4": 5.163
+ 
+#### **5.d.** What number of K got the best silhouette score? What can you say about the figures? Is this the expected result?
+***Run endpoints "/5-c-calculate-the-silhouette-plots-and-coefficients-k-means" and "/5-c-calculate-the-silhouette-plots-and-coefficients-k-medoids" to see the plots***
+> K=2 got the best result for both k-means and k-medoids with an Average Silhouette of 0.7050
+> From the figures it can be seen that for the test data, the best result is obtained for k=2, followed by k=4. In general, the k-means and k-medoids clustering algorithms have a good performance for data in blob form or distributed in groups.
+
+#### **6.b.** Apply k-means, k-medoids, DBSCAN and Spectral Clustering from Scikit-Learn over each dataset and compare the results of each algorithm with respect to each dataset.
+***Run endpoint "/6-a-plot-scattered-data" to see the plot***
+> - K-means: its performance is better in blobs data. 
+> - K-medoids: as well as kmeans, its performance is better in blobs data. 
+> - DBSCAN: performed poorly with unstructured data and standard deviation blobs in its clusters, but was able to identify outliers.
+> - Spectral Clustering: performed very well for the blobs with standard deviation and in general has good behavior, except for the clustering in the blobs when their grouping is concentrated.

@@ -7,7 +7,7 @@ random_state = 170
 
 
 def create_toy_data():
-    np.random.seed(1)
+    np.random.seed(123)
     return make_blobs(
         n_samples=n_samples,
         n_features=2,
@@ -19,6 +19,7 @@ def create_toy_data():
 
 
 def create_scattered_data_noisy_circles():
+    np.random.seed(123)
     return datasets.make_circles(
         n_samples=n_samples,
         factor=0.5,
@@ -26,22 +27,26 @@ def create_scattered_data_noisy_circles():
 
 
 def create_scattered_data_noisy_moons():
+    np.random.seed(123)
     return datasets.make_moons(
         n_samples=n_samples,
         noise=0.05)
 
 
 def create_scattered_data_blobs():
+    np.random.seed(123)
     return datasets.make_blobs(
         n_samples=n_samples,
         random_state=8)
 
 
 def create_scattered_data_without_structure():
+    np.random.seed(123)
     return np.random.rand(n_samples, 2), None
 
 
 def create_anisotropic_distributed_data():
+    np.random.seed(123)
     X, y = make_blobs(n_samples=n_samples, random_state=random_state)
     transformation = [[0.6, -0.6], [-0.4, 0.8]]
     X_aniso = np.dot(X, transformation)
@@ -49,6 +54,7 @@ def create_anisotropic_distributed_data():
 
 
 def create_scattered_data_blobs_varied_variances():
+    np.random.seed(123)
     return make_blobs(
         n_samples=n_samples,
         cluster_std=[1.0, 2.5, 0.5],

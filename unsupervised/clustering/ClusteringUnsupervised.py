@@ -14,7 +14,7 @@ def plot_data(X, y):
     resources_path = os.path.join(path, "../../resources")
     fig, ax = plt.subplots(figsize=(9, 6))
 
-    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis')
+    plt.scatter(X[:, 0], X[:, 1], c=y)
     plt.tight_layout()
     plt.savefig(os.path.join(resources_path, picture_name))
     return os.path.join(resources_path, picture_name)
@@ -55,7 +55,7 @@ def plot_silhouette_coefficients_k_means(X):
                            edgecolor="k")
         for idx, c in enumerate(cluster_centroids):
             axes[0, i].scatter(c[0], c[1], marker="$%d$" % idx, alpha=1, s=50, edgecolor="k")
-        axes[0, i].set_title(f'Clusters = {n_clusters}\nSilhouette = {silhouette_avg:.2f}')
+        axes[0, i].set_title(f'Clusters = {n_clusters}\nSilhouette = {silhouette_avg:.4f}')
 
         # Create a bar chart of the silhouette coefficient for the clusters.
         cluster_silhouette_avg = silhouette_score(X[labels >= 0], labels[labels >= 0])
@@ -75,7 +75,7 @@ def plot_silhouette_coefficients_k_means(X):
         axes[1, i].set_yticks([])
         axes[1, i].set_xlim([-0.1, 1])
         axes[1, i].set_ylim([0, len(X) + (n_clusters + 1) * 10])
-        axes[1, i].set_title(f'Clusters = {n_clusters}\nAvg Silhouette = {cluster_silhouette_avg:.2f}')
+        axes[1, i].set_title(f'Clusters = {n_clusters}\nAvg Silhouette = {cluster_silhouette_avg:.4f}')
 
     plt.tight_layout()
     plt.savefig(os.path.join(resources_path, picture_name))
@@ -105,7 +105,7 @@ def plot_silhouette_coefficients_k_medoids(X):
                            edgecolor="k")
         for idx, c in enumerate(cluster_medoids):
             axes[0, i].scatter(c[0], c[1], marker="$%d$" % idx, alpha=1, s=50, edgecolor="k")
-        axes[0, i].set_title(f'Clusters = {n_clusters}\nSilhouette = {silhouette_avg:.2f}')
+        axes[0, i].set_title(f'Clusters = {n_clusters}\nSilhouette = {silhouette_avg:.4f}')
 
         #  Create a bar chart of the silhouette coefficient for the clusters.
         cluster_silhouette_avg = silhouette_score(X[labels >= 0], labels[labels >= 0])
@@ -125,7 +125,7 @@ def plot_silhouette_coefficients_k_medoids(X):
         axes[1, i].set_yticks([])
         axes[1, i].set_xlim([-0.1, 1])
         axes[1, i].set_ylim([0, len(X) + (n_clusters + 1) * 10])
-        axes[1, i].set_title(f'Clusters = {n_clusters}\nAvg Silhouette = {cluster_silhouette_avg:.2f}')
+        axes[1, i].set_title(f'Clusters = {n_clusters}\nAvg Silhouette = {cluster_silhouette_avg:.4f}')
 
     plt.tight_layout()
     plt.savefig(os.path.join(resources_path, picture_name))
