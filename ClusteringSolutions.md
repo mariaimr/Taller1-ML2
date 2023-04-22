@@ -60,7 +60,7 @@ DBSCAN (Density-Based Spatial Clustering of Applications with Noise) is a popula
 
 #### **6.b.** Apply k-means, k-medoids, DBSCAN and Spectral Clustering from Scikit-Learn over each dataset and compare the results of each algorithm with respect to each dataset.
 ***Run endpoint "/6-a-plot-scattered-data" to see the plot***
-> - K-means: its performance is better in blobs data. 
-> - K-medoids: as well as kmeans, its performance is better in blobs data. 
-> - DBSCAN: performed poorly with unstructured data and standard deviation blobs in its clusters, but was able to identify outliers.
+> - K-means and K-medoids obtained better results on blob data and acceptable scores on Anistropic data.
+> - DBSCAN: performed poorly with unstructured data and standard deviation blobs in its clusters, but was able to identify outliers. 
 > - Spectral Clustering: performed very well for the blobs with standard deviation and in general has good behavior, except for the clustering in the blobs when their grouping is concentrated.
+> - DBSCAN and Spectral clustering, Visually it can be seen that they are very good at separating data in the form of noisy moons and noisy circles, but being nonlinear algorithms, the silhouette coefficient metric does not score well.
